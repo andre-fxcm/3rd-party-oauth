@@ -77,6 +77,7 @@ app.get('/authorized', function (req, res) {
         req.session.refresh_token = result.data.refresh_token;
         res.redirect('/');
     }).catch(function (err) {
+        req.session.error = err.toString();
         console.log("ERROR:: " + err);
         res.redirect("/");
     });
@@ -89,6 +90,7 @@ app.get('/logout', function (req, res) {
     url.searchParams.set('client_id', CONFIG.client_id);
     url.searchParams.set('redirect_uri', CONFIG.redirect_logout_url);
     url.searchParams.set('refresh_token', req.session.refresh_token);
+    console.log(url.toString())
     res.redirect(url.toString());
 });
 
@@ -114,12 +116,17 @@ app.get('/refresh', function (req, res) {
         res.redirect('/');
     }).catch(function (err) {
         console.log("ERROR:: " + err);
+        req.session.error = err.toString();
         res.redirect("/");
     });
 })
 
 app.get('/', function (req, res) {
-    res.render('index', {access_token: req.session.access_token, refresh_token: req.session.refresh_token});
+    res.render('index', {
+        access_token: req.session.access_token,
+        refresh_token: req.session.refresh_token,
+        error: req.session.error
+    });
 });
 
 // Start server

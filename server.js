@@ -90,7 +90,9 @@ app.get('/logout', function (req, res) {
     url.searchParams.set('client_id', CONFIG.client_id);
     url.searchParams.set('redirect_uri', CONFIG.redirect_logout_url);
     url.searchParams.set('refresh_token', req.session.refresh_token);
-    console.log(url.toString())
+    console.log("LOGOUT URL:: " + url.toString())
+    req.session.access_token = null;
+    req.session.refresh_token = null;
     res.redirect(url.toString());
 });
 
